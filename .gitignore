@@ -10,6 +10,10 @@ venv/
 .pytest_cache/
 .mypy_cache/
 
+# Runtime data
+data/users.json
+data/supervision_requests.json
+
 # OS/editor
 .DS_Store
 .vscode/

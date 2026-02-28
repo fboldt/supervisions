@@ -4,10 +4,15 @@ Version: 0.1.0
 Summary: Fresh minimal scaffold for a Python project
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
+Requires-Dist: Flask<4.0,>=3.0
 
 # supervisions
 
 Fresh minimal scaffold for a Python project.
+
+Includes a minimal user control feature with two roles:
+- `admin`
+- `regular`
 
 ## Structure
 
@@ -32,15 +37,40 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .
 python -m supervisions
+python -m supervisions --role admin --username alice
+python -m supervisions --role regular --username bob
+python -m supervisions --role admin --username alice --create-user charlie --create-role regular
+python -m supervisions --role admin --username alice --create-user charlie --create-role regular --create-password charlie-pass
 python -m unittest discover -s tests -v
 ```
+
+Created users are persisted in `data/users.json`.
+
+## Login page
+
+Run the web app:
+
+```bash
+make web
+```
+
+Open http://127.0.0.1:8000/login and use demo credentials:
+- `alice` / `alice123` (admin)
+- `bob` / `bob123` (regular)
+
+Flow:
+- successful login redirects to `/dashboard`
+- `/dashboard` requires an active session
+- use **Logout** to clear session and return to `/login`
 
 ## Make targets
 
 ```bash
 make install
 make run
+make web
 make test
 make clean
 make reset
+make demo
 ```

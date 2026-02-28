@@ -8,7 +8,12 @@ version = "0.1.0"
 description = "Fresh minimal scaffold for a Python project"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+	"Flask>=3.0,<4.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+supervisions = ["templates/*.html"]

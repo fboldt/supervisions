@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Supervisions Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        max-width: 420px;
+      }
+
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.6rem;
+      }
+
+      .error {
+        color: #b00020;
+      }
+
+      .ok {
+        color: #0a7f2e;
+      }
+
+      .muted {
+        color: #666;
+      }
+
+      .users {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+    <div class="card">
+      <p><strong>User:</strong> {{ username }}</p>
+      <p><strong>Role:</strong> {{ role }}</p>
+      {% if category %}
+      <p><strong>Category:</strong> {{ category }}</p>
+      {% endif %}
+    </div>
+
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if result %}
+    <p class="ok">{{ result }}</p>
+    {% endif %}
+
+    {% if role == 'admin' %}
+    <h2>Create user</h2>
+    <form method="post" action="/admin/users">
+      <div>
+        <label for="new-username">Username</label><br />
+        <input id="new-username" name="username" type="text" required />
+      </div>
+
+      <div>
+        <label for="new-role">Role</label><br />
+        <select id="new-role" name="role">
+          <option value="regular">regular</option>
+          <option value="admin">admin</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="new-category">Regular category</label><br />
+        <select id="new-category" name="category">
+          <option value="student">student</option>
+          <option value="professor">professor</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="new-password">Password (optional)</label><br />
+        <input id="new-password" name="password" type="text" />
+      </div>
+
+      <button type="submit">Create user</button>
+    </form>
+    {% else %}
+    <p class="muted">Only admins can create users.</p>
+    {% endif %}
+
+    {% if role == 'regular' and category == 'professor' %}
+    <h2>My profile</h2>
+    <form method="post" action="/profile">
+      <div>
+        <label for="full-name">Full name</label><br />
+        <input
+          id="full-name"
+          name="full_name"
+          type="text"
+          value="{{ profile.full_name if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="lattes-link">Lattes link</label><br />
+        <input
+          id="lattes-link"
+          name="lattes_link"
+          type="url"
+          value="{{ profile.lattes_link if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="email">Email</label><br />
+        <input id="email" name="email" type="email" value="{{ profile.email if profile else '' }}" />
+      </div>
+
+      <div>
+        <label for="sipap-number">SIPAP number</label><br />
+        <input
+          id="sipap-number"
+          name="sipap_number"
+          type="text"
+          value="{{ profile.sipap_number if profile else '' }}"
+        />
+      </div>
+
+      <button type="submit">Save profile</button>
+    </form>
+
+    <h2>Pending supervision requests</h2>
+    {% if pending_requests %}
+    <ul>
+      {% for supervision_request in pending_requests %}
+      <li>
+        {{ supervision_request.student_name }} requested {{ supervision_request.slot|replace('_', ' ') }}
+        <form method="post" action="/supervision-requests/decision" style="display: inline">
+          <input type="hidden" name="request_id" value="{{ supervision_request.id }}" />
+          <input type="hidden" name="decision" value="accepted" />
+          <button type="submit">Accept</button>
+        </form>
+        <form method="post" action="/supervision-requests/decision" style="display: inline">
+          <input type="hidden" name="request_id" value="{{ supervision_request.id }}" />
+          <input type="hidden" name="decision" value="rejected" />
+          <button type="submit">Reject</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted">No pending supervision requests.</p>
+    {% endif %}
+    {% endif %}
+
+    {% if role == 'regular' and category == 'student' %}
+    <h2>My profile</h2>
+    <form method="post" action="/profile">
+      <div>
+        <label for="student-enroll-number">Enroll number</label><br />
+        <input
+          id="student-enroll-number"
+          name="enroll_number"
+          type="text"
+          value="{{ profile.enroll_number if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="student-full-name">Full name</label><br />
+        <input
+          id="student-full-name"
+          name="full_name"
+          type="text"
+          value="{{ profile.full_name if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="student-lattes-link">Lattes link</label><br />
+        <input
+          id="student-lattes-link"
+          name="lattes_link"
+          type="url"
+          value="{{ profile.lattes_link if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="student-email">Email</label><br />
+        <input
+          id="student-email"
+          name="email"
+          type="email"
+          value="{{ profile.email if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="student-telephone">Telephone number</label><br />
+        <input
+          id="student-telephone"
+          name="telephone_number"
+          type="text"
+          value="{{ profile.telephone_number if profile else '' }}"
+        />
+      </div>
+
+      <div>
+        <label for="student-advisor-1">Advisor 1</label><br />
+        <select id="student-advisor-1" name="advisor_1">
+          <option value="">Select professor</option>
+          {% for professor_name in professor_names %}
+          <option
+            value="{{ professor_name }}"
+            {% if profile and profile.advisor_1 == professor_name %}selected{% endif %}
+          >
+            {{ professor_name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="student-advisor-2">Advisor 2 (optional)</label><br />
+        <select id="student-advisor-2" name="advisor_2">
+          <option value="">None</option>
+          {% for professor_name in professor_names %}
+          <option
+            value="{{ professor_name }}"
+            {% if profile and profile.advisor_2 == professor_name %}selected{% endif %}
+          >
+            {{ professor_name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit">Save profile</button>
+    </form>
+
+    <h2>My supervision requests</h2>
+    {% if student_pending_requests %}
+    <ul>
+      {% for supervision_request in student_pending_requests %}
+      <li>
+        {{ supervision_request.slot|replace('_', ' ') }} pending with {{ supervision_request.professor_name }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted">No pending supervision requests.</p>
+    {% endif %}
+    {% endif %}
+
+    <div class="users">
+      <h2>Persisted users</h2>
+      {% if users %}
+      <ul>
+        {% for user in users %}
+        <li>
+          {{ user.username }} ({{ user.role.value }}{% if user.category %} - {{ user.category.value }}{% endif %})
+          {% if role == 'admin' %}
+          <form method="post" action="/admin/users/delete" style="display: inline">
+            <input type="hidden" name="username" value="{{ user.username }}" />
+            <button type="submit">Delete</button>
+          </form>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No persisted users yet.</p>
+      {% endif %}
+    </div>
+
+    <form method="post" action="/logout">
+      <button type="submit">Logout</button>
+    </form>
+  </body>
+</html>

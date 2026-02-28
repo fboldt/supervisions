@@ -2,9 +2,17 @@ README.md
 pyproject.toml
 src/supervisions/__init__.py
 src/supervisions/__main__.py
+src/supervisions/auth.py
 src/supervisions/main.py
+src/supervisions/user_control.py
+src/supervisions/user_store.py
+src/supervisions/web.py
 src/supervisions.egg-info/PKG-INFO
 src/supervisions.egg-info/SOURCES.txt
 src/supervisions.egg-info/dependency_links.txt
+src/supervisions.egg-info/requires.txt
 src/supervisions.egg-info/top_level.txt
+src/supervisions/templates/dashboard.html
+src/supervisions/templates/login.html
+tests/test_login_page.py
 tests/test_smoke.py
