@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/supervisions/__init__.py
+src/supervisions/__main__.py
+src/supervisions/main.py
+src/supervisions.egg-info/PKG-INFO
+src/supervisions.egg-info/SOURCES.txt
+src/supervisions.egg-info/dependency_links.txt
+src/supervisions.egg-info/top_level.txt
+tests/test_smoke.py
